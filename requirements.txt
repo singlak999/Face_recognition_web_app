@@ -37,7 +37,7 @@ gspread==5.10.0
 httplib2==0.22.0
 idna==3.4
 ipykernel==6.23.3
-ipython==8.0.0
+ipython
 itsdangerous==2.1.2
 jedi==0.18.2
 Jinja2==3.1.2
