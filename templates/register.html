@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Registration</title>
+</head>
+<body>
+    <h1>Registration</h1>
+    <h2>Enter Student Details and Capture Image</h2>
+    <div id="camera-feed" style="display: none;">
+        <video id="video" width="640" height="480" autoplay></video>
+    </div>
+    <canvas id="live-preview" width="640" height="480" style="display: none;"></canvas>
+    <button id="take-photo-btn">Take Photo</button>
+    <button id="capture-btn" style="display: none;">Capture</button>
+    <canvas id="canvas" width="640" height="480" style="display: none;"></canvas>
+    <form method="post" id="student-form" style="display: none;">
+        <label for="registration_number">Registration Number:</label>
+        <input type="text" name="registration_number" id="registration_number">
+        
+        <label for="student_name">Student Name:</label>
+        <input type="text" name="student_name" id="student_name">
+        
+        <input type="hidden" name="image_data" id="image_data">
+        
+        <input type="submit" value="Submit" id="submit-btn" disabled>
+    </form>
+
+    <div id="success-message" style="display: none;">
+        <span>&#10003;</span>
+        Image Captured Successfully!
+    </div>
+
+    <script>
+        // Get the video element and canvas
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const livePreview = document.getElementById('live-preview');
+        const takePhotoBtn = document.getElementById('take-photo-btn');
+        const captureBtn = document.getElementById('capture-btn');
+        const imageInput = document.getElementById('image_data');
+        const successMessage = document.getElementById('success-message');
+        const submitBtn = document.getElementById('submit-btn');
+
+        let mediaStream;
+
+        // Function to start the camera
+        function startCamera() {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then((stream) => {
+                    mediaStream = stream;
+                    video.srcObject = stream;
+                    video.style.display = 'none';
+                    livePreview.style.display = 'block';
+                    takePhotoBtn.disabled = true;
+                    captureBtn.style.display = 'block';
+                    canvas.style.display = 'none'; // Hide canvas when camera starts
+                })
+                .catch((error) => {
+                    console.error('Error accessing the camera: ', error);
+                });
+        }
+
+        // Function to capture image from video stream
+        function captureImage() {
+            const context = canvas.getContext('2d');
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            // Get the image data as a base64-encoded data URL
+            const imageData = canvas.toDataURL('image/jpeg', 0.8);
+            imageInput.value = imageData;
+
+            // Hide live preview, show success message and capture button
+            livePreview.style.display = 'none';
+            video.style.display = 'none';
+            canvas.style.display = 'block'; // Show captured image
+            captureBtn.style.display = 'none';
+            successMessage.style.display = 'block';
+            takePhotoBtn.disabled = false;
+            document.getElementById('student-form').style.display = 'block';
+
+            // Enable the submit button
+            submitBtn.disabled = false;
+
+            // Turn off the camera
+            mediaStream.getTracks().forEach(track => track.stop());
+        }
+
+        // Event listener for the "Take Photo" button
+        takePhotoBtn.addEventListener('click', function() {
+            startCamera();
+            canvas.style.display = 'none'; // Hide canvas initially
+            video.style.display = 'none'; // Hide live preview initially
+        });
+
+        // Event listener for the "Capture" button
+        captureBtn.addEventListener('click', function() {
+            captureImage();
+        });
+
+        // Continuous drawing of the live preview
+        setInterval(function() {
+            if (mediaStream) {
+                const context = livePreview.getContext('2d');
+                context.drawImage(video, 0, 0, livePreview.width, livePreview.height);
+            }
+        }, 100);
+
+        // Check if all fields are filled before enabling submit button
+        document.getElementById('registration_number').addEventListener('input', validateForm);
+        document.getElementById('student_name').addEventListener('input', validateForm);
+
+        function validateForm() {
+            const regNumber = document.getElementById('registration_number').value;
+            const studentName = document.getElementById('student_name').value;
+            if (regNumber.trim() !== '' && studentName.trim() !== '') {
+                submitBtn.disabled = false;
+            } else {
+                submitBtn.disabled = true;
+            }
+        }
+    </script>
+</body>
+</html>

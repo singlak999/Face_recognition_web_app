@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Attendance on {{ date }}</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Student Attendance on {{ date }}</h1>
+    <table>
+        <tr>
+            <th>Registration Number</th>
+            <th>Name</th>
+            <th>Attendance</th>
+        </tr>
+        {% for student in student_details %}
+        <tr>
+            <td>{{ student['RegistrationNumber'] }}</td>
+            <td>{{ student['Name'] }}</td>
+            <td>{{ student['Attendance'] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
