@@ -1,6 +1,6 @@
 cmake
 cvzone
-dlib
+dlib --no-binary dlib
 face-recognition
 flask
 firebase_admin
