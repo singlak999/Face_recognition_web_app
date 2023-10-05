@@ -15,8 +15,8 @@ app = Flask(__name__)
 # Initialize Firebase Admin SDK
 cred = credentials.Certificate("key.json")
 firebase_admin.initialize_app(cred, {
-    'databaseURL': 'https://face-recognition-6420f-default-rtdb.asia-southeast1.firebasedatabase.app/',
-    'storageBucket': 'face-recognition-6420f.appspot.com'
+    'databaseURL': '/',
+    'storageBucket': ''
 })
 
 # Firebase database reference
